@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row align-items-center mb-4">
+    <div class="col">
+        <h2 class="fw-800 mb-1" style="letter-spacing: -1px;">Journal</h2>
+        <p class="text-muted small mb-0">Historique des actions effectuées depuis ce tableau de bord (200 dernières)</p>
+    </div>
+</div>
+
+{% if not logs %}
+<div class="card p-5 text-center border-0">
+    <p class="text-muted mb-0">Aucune action enregistrée pour le moment.</p>
+</div>
+{% else %}
+<div class="card border-0">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead>
+                <tr class="text-muted small text-uppercase">
+                    <th class="px-4 py-3">Date</th>
+                    <th>Admin</th>
+                    <th>Action</th>
+                    <th>Détails</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td class="px-4 text-muted small">{{ log.timestamp.strftime('%d/%m/%Y %H:%M') }}</td>
+                    <td class="fw-600">{{ log.admin_username }}</td>
+                    <td><span class="badge bg-light text-dark">{{ log.action }}</span></td>
+                    <td class="text-muted small">{{ log.details }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

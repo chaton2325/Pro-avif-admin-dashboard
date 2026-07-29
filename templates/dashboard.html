@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row align-items-center mb-4">
+    <div class="col">
+        <h2 class="fw-800 mb-1" style="letter-spacing: -1px;">Bases clients</h2>
+        <p class="text-muted small mb-0">Chaque client Pro-Avif possède son propre backend et sa propre base MongoDB</p>
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-orange px-4 py-2 fw-600" data-bs-toggle="modal" data-bs-target="#addDbModal">
+            <i class="fas fa-plus me-2"></i> Ajouter une base client
+        </button>
+    </div>
+</div>
+
+{% if not overview %}
+<div class="card text-center py-5 border-dashed" style="border: 2px dashed #ddd !important; background: transparent; box-shadow:none;">
+    <div class="card-body">
+        <i class="fas fa-database mb-3 text-muted" style="font-size: 2.5rem;"></i>
+        <h5 class="fw-bold">Aucune base cliente enregistrée</h5>
+        <p class="text-muted">Ajoutez la base MongoDB d'un client pour commencer à gérer sa licence et ses utilisateurs.</p>
+    </div>
+</div>
+{% else %}
+<div class="row">
+    {% for item in overview %}
+    {% set entry = item.entry %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100 border-0">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h5 class="fw-800 mb-1">{{ entry.name }}</h5>
+                        <span class="text-muted small">{{ entry.db_name }}</span>
+                    </div>
+                    {% if not item.reachable %}
+                        <span class="badge bg-light text-muted px-3 py-2">INJOIGNABLE</span>
+                    {% elif item.license.is_blocked %}
+                        <span class="badge badge-inactive px-3 py-2">BLOQUÉE</span>
+                    {% else %}
+                        <span class="badge badge-active px-3 py-2">ACTIVE</span>
+                    {% endif %}
+                </div>
+
+                {% if item.reachable %}
+                <div class="d-flex gap-4 mb-3">
+                    <div>
+                        <div class="fw-800" style="font-size:1.3rem;">{{ item.active_count }}</div>
+                        <div class="text-muted small">actifs / {{ item.user_count }}</div>
+                    </div>
+                    <div>
+                        <div class="fw-800" style="font-size:1.3rem;">{{ "Permanente" if item.license.license_type == "permanent" else "Temporaire" }}</div>
+                        <div class="text-muted small">licence</div>
+                    </div>
+                </div>
+                {% if item.license.is_blocked %}
+                <p class="small text-danger mb-3"><i class="fas fa-circle-exclamation me-1"></i>{{ item.license.block_reason or "Bloquée" }}</p>
+                {% endif %}
+                {% else %}
+                <p class="small text-muted mb-3">Connexion à la base impossible pour le moment.</p>
+                {% endif %}
+
+                {% if entry.notes %}
+                <p class="small text-muted mb-3"><i class="fas fa-note-sticky me-1"></i>{{ entry.notes }}</p>
+                {% endif %}
+            </div>
+            <div class="card-footer bg-light border-0 p-3 d-flex gap-2">
+                <a href="{{ url_for('database_detail', db_id=entry.id) }}" class="btn btn-dark flex-grow-1 fw-600 btn-sm">
+                    <i class="fas fa-gear me-1"></i> Gérer
+                </a>
+                <form action="{{ url_for('databases_delete', db_id=entry.id) }}" method="POST" onsubmit="return confirm('Retirer \'{{ entry.name }}\' de ce tableau de bord ?\n(Les données du client ne seront pas supprimées.)');">
+                    <button type="submit" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="modal fade" id="addDbModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header border-0 p-4 pb-0">
+                <h5 class="fw-800">Nouvelle base client</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('dashboard') }}">
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">Nom du client</label>
+                        <input type="text" name="name" class="form-control" placeholder="ex: Ferme Dupont SARL" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">URI de connexion MongoDB</label>
+                        <input type="text" name="mongo_uri" class="form-control" placeholder="mongodb://user:motdepasse@host:27017/?authSource=admin" required>
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label small fw-bold text-muted">Nom de la base</label>
+                        <input type="text" name="db_name" class="form-control" placeholder="pro-avif-db" required>
+                    </div>
+                    <div class="mb-0 mt-3">
+                        <label class="form-label small fw-bold text-muted">Notes (optionnel)</label>
+                        <input type="text" name="notes" class="form-control" placeholder="contact, remarques...">
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="button" class="btn btn-light fw-600" data-bs-dismiss="modal">Fermer</button>
+                    <button type="submit" class="btn btn-orange fw-800 px-4">AJOUTER</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

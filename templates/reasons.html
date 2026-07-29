@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row align-items-center mb-4">
+    <div class="col">
+        <h2 class="fw-800 mb-1" style="letter-spacing: -1px;">Raisons de blocage</h2>
+        <p class="text-muted small mb-0">Liste réutilisable lors du blocage de l'application</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-5 mb-4">
+        <div class="card p-4 border-0">
+            <h5 class="fw-800 mb-3">Nouvelle raison</h5>
+            <form method="POST" action="{{ url_for('reasons_page') }}">
+                <div class="mb-3">
+                    <input type="text" name="label" class="form-control" placeholder="ex: Version d'essai terminée" required>
+                </div>
+                <button type="submit" class="btn btn-orange fw-800 w-100 py-2"><i class="fas fa-plus me-2"></i>Ajouter</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-lg-7 mb-4">
+        <div class="card border-0">
+            {% if not reasons %}
+            <div class="p-5 text-center">
+                <p class="text-muted mb-0">Aucune raison enregistrée.</p>
+            </div>
+            {% else %}
+            <ul class="list-group list-group-flush">
+                {% for r in reasons %}
+                <li class="list-group-item d-flex justify-content-between align-items-center px-4 py-3">
+                    <span class="fw-600">{{ r.label }}</span>
+                    <form method="POST" action="{{ url_for('reasons_delete', reason_id=r.id) }}" onsubmit="return confirm('Supprimer cette raison ?');">
+                        <button type="submit" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash"></i></button>
+                    </form>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
