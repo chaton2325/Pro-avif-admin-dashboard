@@ -15,7 +15,7 @@
 {% else %}
 <div class="card border-0">
     <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
+        <table class="table table-hover align-middle mb-0 responsive-stack">
             <thead>
                 <tr class="text-muted small text-uppercase">
                     <th class="px-4 py-3">Date</th>
@@ -27,10 +27,10 @@
             <tbody>
                 {% for log in logs %}
                 <tr>
-                    <td class="px-4 text-muted small">{{ log.timestamp.strftime('%d/%m/%Y %H:%M') }}</td>
-                    <td class="fw-600">{{ log.admin_username }}</td>
-                    <td><span class="badge bg-light text-dark">{{ log.action }}</span></td>
-                    <td class="text-muted small">{{ log.details }}</td>
+                    <td class="px-4 text-muted small" data-label="Date">{{ log.timestamp.strftime('%d/%m/%Y %H:%M') }}</td>
+                    <td class="fw-600" data-label="Admin">{{ log.admin_username }}</td>
+                    <td data-label="Action"><span class="badge bg-light text-dark">{{ log.action }}</span></td>
+                    <td class="text-muted small" data-label="Détails">{{ log.details }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

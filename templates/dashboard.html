@@ -1,16 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="row align-items-center mb-4">
-    <div class="col">
+<div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center gap-3 mb-4">
+    <div>
         <h2 class="fw-800 mb-1" style="letter-spacing: -1px;">Bases clients</h2>
         <p class="text-muted small mb-0">Chaque client Pro-Avif possède son propre backend et sa propre base MongoDB</p>
     </div>
-    <div class="col-auto">
-        <button class="btn btn-orange px-4 py-2 fw-600" data-bs-toggle="modal" data-bs-target="#addDbModal">
-            <i class="fas fa-plus me-2"></i> Ajouter une base client
-        </button>
-    </div>
+    <button class="btn btn-orange px-4 py-2 fw-600 btn-block-mobile" data-bs-toggle="modal" data-bs-target="#addDbModal">
+        <i class="fas fa-plus me-2"></i> Ajouter une base client
+    </button>
 </div>
 
 {% if not overview %}

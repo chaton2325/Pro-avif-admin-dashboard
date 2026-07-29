@@ -30,7 +30,7 @@
             {% else %}
             <ul class="list-group list-group-flush">
                 {% for r in reasons %}
-                <li class="list-group-item d-flex justify-content-between align-items-center px-4 py-3">
+                <li class="list-group-item d-flex flex-wrap justify-content-between align-items-center gap-2 px-4 py-3">
                     <span class="fw-600">{{ r.label }}</span>
                     <form method="POST" action="{{ url_for('reasons_delete', reason_id=r.id) }}" onsubmit="return confirm('Supprimer cette raison ?');">
                         <button type="submit" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash"></i></button>
